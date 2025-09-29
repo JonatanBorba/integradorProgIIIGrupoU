@@ -1,0 +1,25 @@
+meta {
+  name: notificacion
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/notificacion
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "fecha":"13/09/2025",
+    "salon":"principal",
+    "turno":"3ro",
+    "correoDestino": "jonatanborba1987@gmail.com"
+    
+  }
+}
+
+settings {
+  encodeUrl: true
+}
