@@ -11,10 +11,14 @@ import { fileURLToPath } from 'url';
 import { readFile } from 'fs/promises';
 //Importo path que me permite manejar rutas de archivos y directorios en dstintos sistemas operativos
 import path from 'path';
-import { info } from 'console';
+import {serviciosRouter} from './rutas/v1/servicios.rutas.js';
+import { salonesRouter } from './rutas/salones.rutas.js';
+
+
 
 //Creo una instancia de Express
 const app = express();
+
 //Todo lo que este en el body de la peticion lo voy a recibir en formato JSON
 app.use(express.json());// Defino una ruta para el endpoint /estado
 
@@ -22,7 +26,13 @@ app.get('/estado', (req, res) => {
     res.json({'ok' : true });
 });    
 
-app.get
+// Defino la ruta base para el router de servicios
+app.use("/api/v1/servicios", serviciosRouter);
+
+// Defino la ruta base para el router de salones
+app.use("/api/v1/salones", salonesRouter);
+
+
 //Creo una Ruta para enviar las notificaciones al administrador y al usuario
 app.post('/notificacion', async(req, res) => {
     console.log(req.body)

@@ -1,0 +1,15 @@
+meta {
+  name: eliminar servicio
+  type: http
+  seq: 4
+}
+
+delete {
+  url: http://localhost:3000/api/v1/servicios
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

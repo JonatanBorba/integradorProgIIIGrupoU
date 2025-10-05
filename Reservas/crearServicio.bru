@@ -1,0 +1,22 @@
+meta {
+  name: crearServicio
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:3000/api/v1/servicios
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "descripcion": "musica linda",
+    "importe": 60000
+  }
+}
+
+settings {
+  encodeUrl: true
+}

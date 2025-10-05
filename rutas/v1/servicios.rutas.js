@@ -1,15 +1,18 @@
 import express from 'express';
+import ServiciosControlador from '../../controlador/servicios.controlador.js';
 
 const router = express.Router();
 
-router.get('/', );
+const serviciosControlador = new ServiciosControlador();
 
-router.get('/:id', );
+router.post('/', serviciosControlador.postServicios);
 
-router.post('/', );
+router.get('/:id', serviciosControlador.getServiciosPorId);
 
-router.put('/:id', );
+router.get('/', serviciosControlador.getServicios);
 
-router.delete('/:id', );
+router.put('/:id', serviciosControlador.putServiciosPorId);
 
-export{router};
+router.delete('/:id', serviciosControlador.deleteServiciosPorId);
+
+export{router as serviciosRouter};
