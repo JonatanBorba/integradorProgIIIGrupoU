@@ -33,6 +33,10 @@ export default class ServiciosServicios {
     };
     modificarServicioPorId = async(id, body) => {
         try {
+            const existeServicio = await this.obtenerServicioPorId(id);
+            if (!existeServicio) {
+                return null;
+            };
             return await this.serviciosDB.modificarPorId(id, body);
         }catch (error) {
             throw new Error('Error al modificar el servicio: ' + error.message);
@@ -40,6 +44,10 @@ export default class ServiciosServicios {
     };
     eliminarServicioPorId = async(id) => {
         try {
+            const existeServicio = await this.obtenerServicioPorId(id);
+            if (!existeServicio) {
+                return null;
+            };
             return await this.serviciosDB.eliminarPorId(id);
         }catch (error) {
             throw new Error('Error al eliminar el servicio: ' + error.message);

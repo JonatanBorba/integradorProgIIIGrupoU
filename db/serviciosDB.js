@@ -9,11 +9,11 @@ export default class ServiciosDB {
 
     };
     obtenerPorId = async(id) => {
-        const [resultado] = await conexion.query('SELECT * FROM servicios WHERE servicio_id = ?', [id]);
+        const [resultado] = await conexion.query('SELECT * FROM servicios WHERE servicio_id = ? and activo = 1', [id]);
         return resultado[0];
     };
     obtener = async() => {
-        const [resultado] = await conexion.query('SELECT * FROM servicios');
+        const [resultado] = await conexion.query('SELECT * FROM servicios WHERE activo = 1');
         return resultado;
     
     };

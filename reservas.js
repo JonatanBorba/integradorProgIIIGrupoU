@@ -12,7 +12,7 @@ import { readFile } from 'fs/promises';
 //Importo path que me permite manejar rutas de archivos y directorios en dstintos sistemas operativos
 import path from 'path';
 import {serviciosRouter} from './rutas/v1/servicios.rutas.js';
-import { salonesRouter } from './rutas/salones.rutas.js';
+import { salonesRouter } from './rutas/v1/salones.rutas.js';
 
 
 

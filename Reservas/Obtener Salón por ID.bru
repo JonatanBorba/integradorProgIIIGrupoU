@@ -1,0 +1,15 @@
+meta {
+  name: Obtener Salón por ID
+  type: http
+  seq: 9
+}
+
+get {
+  url: http://localhost:3000/api/v1/salones/6
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

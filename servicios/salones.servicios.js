@@ -33,6 +33,10 @@ export default class SalonesServicios {
     };
     modificarPorId = async(id, body) => {
         try {
+            const existeSalon = await this.obtenerSalonPorId(id);
+            if (!existeSalon) { 
+                return null;
+            }
             return await this.salonesDB.modificarPorId(id, body);
         }catch (error) {
             throw new Error('Error al modificar el salon: ' + error.message);
@@ -40,6 +44,10 @@ export default class SalonesServicios {
     };
     eliminarPorId = async(id) => {
         try {
+            const existeSalon = await this.obtenerSalonPorId(id);
+            if (!existeSalon) { 
+                return null;
+            }
             return await this.salonesDB.eliminarPorId(id);
         }catch (error) {
             throw new Error('Error al eliminar el salón: ' + error.message);

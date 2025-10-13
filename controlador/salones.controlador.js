@@ -11,8 +11,8 @@ export default class SalonesControlador {
         if(!titulo || !direccion || !capacidad || !importe ){
             return res.status(400).json({mensaje: 'Faltan datos obligatorios'});
         }
-        if(typeof titulo !== 'string' || typeof direccion !== 'string' || typeof capacidad !== 'number' || typeof importe !== 'number' ){
-            return res.status(400).json({mensaje: 'El tipo de dato de algun campo es incorrecto'});
+         if(typeof titulo !== 'string' || typeof direccion !== 'string' || typeof capacidad !== 'number' || typeof importe !== 'number' ){
+             return res.status(400).json({mensaje: 'El tipo de dato de algun campo es incorrecto'});
         }
         const nuevoSalon = await this.salonesServicio.agregarSalon({titulo,direccion,capacidad,importe});
         res.status(201).json(nuevoSalon);

@@ -9,11 +9,11 @@ export default class SalonesDB {
 
     };
     obtenerPorId = async(id) => {
-        const [resultado] = await conexion.query('SELECT * FROM salones WHERE salon_id = ?', [id]);
+        const [resultado] = await conexion.query('SELECT * FROM salones WHERE salon_id = ? and activo = 1', [id]);
         return resultado[0];
     };
     obtener = async() => {
-        const [resultado] = await conexion.query('SELECT * FROM salones');
+        const [resultado] = await conexion.query('SELECT * FROM salones WHERE activo = 1');
         return resultado;
     
     };
