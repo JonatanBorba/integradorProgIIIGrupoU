@@ -1,0 +1,26 @@
+meta {
+  name: Crear Reserva
+  type: http
+  seq: 13
+}
+
+post {
+  url: http://localhost:3000/api/v1/reservas
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    
+    "salon_id":10,
+    "usuario_id":2,
+    "tematica": "cumple",
+    "importe_total":250
+    
+  }
+}
+
+settings {
+  encodeUrl: true
+}

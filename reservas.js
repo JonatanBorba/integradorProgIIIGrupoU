@@ -13,7 +13,7 @@ import { readFile } from 'fs/promises';
 import path from 'path';
 import {serviciosRouter} from './rutas/v1/servicios.rutas.js';
 import { salonesRouter } from './rutas/v1/salones.rutas.js';
-
+//import { reservasRouter } from './rutas/v1/reservas.rutas.js';
 
 
 //Creo una instancia de Express
@@ -32,6 +32,8 @@ app.use("/api/v1/servicios", serviciosRouter);
 // Defino la ruta base para el router de salones
 app.use("/api/v1/salones", salonesRouter);
 
+// Defino la ruta base para el router de reservas
+//app.use("/api/v1/reservas", reservasRouter);
 
 //Creo una Ruta para enviar las notificaciones al administrador y al usuario
 app.post('/notificacion', async(req, res) => {
