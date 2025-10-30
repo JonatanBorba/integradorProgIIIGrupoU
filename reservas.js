@@ -12,7 +12,10 @@ import { readFile } from 'fs/promises';
 //Importo path que me permite manejar rutas de archivos y directorios en dstintos sistemas operativos
 import path from 'path';
 import {serviciosRouter} from './rutas/v1/servicios.rutas.js';
-import { salonesRouter } from './rutas/v1/salones.rutas.js';
+import {salonesRouter } from './rutas/v1/salones.rutas.js';
+import {usuariosRouter } from './rutas/v1/usuarios.rutas.js';
+import { turnosRouter} from './rutas/v1/turnos.rutas.js';
+import { reservasRouter } from './rutas/v1/reservas.rutas.js';
 //import { reservasRouter } from './rutas/v1/reservas.rutas.js';
 
 
@@ -32,6 +35,15 @@ app.use("/api/v1/servicios", serviciosRouter);
 // Defino la ruta base para el router de salones
 app.use("/api/v1/salones", salonesRouter);
 
+// Defino la ruta base para el router de salones
+app.use("/api/v1/usuarios", usuariosRouter);
+
+//Defino la ruta para Reservas
+app.use("/api/v1/reservas", reservasRouter);
+//Defino la ruta base para el router de turnos
+
+
+app.use("/api/v1/turnos", turnosRouter);
 // Defino la ruta base para el router de reservas
 //app.use("/api/v1/reservas", reservasRouter);
 

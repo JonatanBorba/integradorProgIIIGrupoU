@@ -1,0 +1,22 @@
+meta {
+  name: InicioSesion
+  type: http
+  seq: 21
+}
+
+post {
+  url: http://localhost:3000/api/v1/usuarios/inicioSesion
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "nombre_usuario":"luna@jayahoo.com", 
+    "contrasenia":"12345"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

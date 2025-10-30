@@ -1,10 +1,87 @@
-// import ReservasServicios from "../servicios/reservas.servicios.js";
+ import ReservasServicios from "../servicios/reservas.servicios.js";
 
 
-// export default class ReservasControlador {
-//     constructor () { 
-//         this.reservasServicio = new ReservasServicios();
-        
+ export default class ReservasControlador {
+     constructor () { 
+         this.reservasServicio = new ReservasServicios();
+     }        
+crear = async (req, res) => {
+        try {
+            
+            const {
+                fecha_reserva,
+                salon_id,
+                usuario_id,
+                turno_id,
+                foto_cumpleaniero, 
+                tematica,
+                importe_salon,
+                importe_total,
+                servicios } = req.body;
+
+            const reserva = {
+                fecha_reserva,
+                salon_id,
+                usuario_id,
+                turno_id,
+                foto_cumpleaniero, 
+                tematica,
+                importe_salon,
+                importe_total, 
+                servicios
+            };
+
+            const nuevaReserva = await this.reservasServicio.crear(reserva)
+
+            if (!nuevaReserva) {
+                return res.status(404).json({
+                    estado: false,
+                    mensaje: 'Reserva no creada'
+                })
+            }
+
+            res.json({
+                estado: true, 
+                mensaje: 'Reserva creada!',
+                salon: nuevaReserva
+            });
+    
+        } catch (err) {
+            console.log('Error en POST /reservas/', err);
+            res.status(500).json({
+                estado: false,
+                mensaje: 'Error interno del servidor.'
+            });
+        }
+    }
+    buscarPorId = async (req, res) => {
+        try {
+            const reserva_id = req.params.reserva_id;
+            const reserva = await this.reservasServicio.buscarPorId(reserva_id);
+
+            if (!reserva) {
+                return res.status(404).json({
+                    estado: false,
+                    mensaje: 'Reserva no encontrada.'
+                })
+            }
+
+            res.json({
+                estado: true, 
+                reserva: reserva
+            });
+    
+        } catch (err) {
+            console.log('Error en GET /reservas/reservas_id', err);
+            res.status(500).json({
+                estado: false,
+                mensaje: 'Error interno del servidor.'
+            });
+        }
+    }
+}
+
+
 //     }
 //     postReservas = async(req, res) => {
 //         const {fecha, salon_id, usuario_id, tematica, importe_total} = req.body;
