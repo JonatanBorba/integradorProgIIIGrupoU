@@ -31,7 +31,7 @@ crear = async (req, res) => {
                 servicios
             };
 
-            const nuevaReserva = await this.reservasServicio.crear(reserva)
+            const nuevaReserva = await this.reservasServicio.crear(reserva, req.user)
 
             if (!nuevaReserva) {
                 return res.status(404).json({
@@ -48,6 +48,18 @@ crear = async (req, res) => {
     
         } catch (err) {
             console.log('Error en POST /reservas/', err);
+            res.status(500).json({
+                estado: false,
+                mensaje: 'Error interno del servidor.'
+            });
+        }
+    }
+    buscarTodos = async (req, res) => {
+        try {
+            const reservas = await this.reservasServicio.buscarTodos(req.user);
+            res.json({ estado: true, datos: reservas });
+        } catch (err) {
+            console.log('Error en GET /reservas', err);
             res.status(500).json({
                 estado: false,
                 mensaje: 'Error interno del servidor.'
@@ -77,6 +89,37 @@ crear = async (req, res) => {
                 estado: false,
                 mensaje: 'Error interno del servidor.'
             });
+        }
+    }
+    informe = async (req, res) => {
+        try{
+            const formatosPermitidos = ['pdf', 'csv'];
+            const formato = req.query.formato;
+
+            if(!formato || !formatosPermitidos.includes(formato)){
+                return res.status(400).send({
+                    estado:"Falla",
+                    mensaje: "Formato inválido para el informe."    
+                });
+            }
+            const resultado = await this.reservasServicio.generarInforme(formato);
+            if (!resultado) {
+                return res.status(400).send({ estado: "Falla", mensaje: "Formato no soportado." });
+            }
+            const { buffer, path, headers } = resultado;
+            res.set(headers);
+            if (formato === 'pdf') {
+                return res.status(200).end(buffer);
+            } else if (formato === 'csv') {
+                return res.status(200).download(path, (err) => {
+                    if (err) {
+                        return res.status(500).send({ estado:"Falla", mensaje: "No se pudo generar el informe." });
+                    }
+                });
+            }
+        }catch(error){
+            console.log(error);
+            res.status(500).send({ estado:"Falla", mensaje: "Error interno en servidor." });
         }
     }
 }

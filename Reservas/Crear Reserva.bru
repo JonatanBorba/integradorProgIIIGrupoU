@@ -7,22 +7,30 @@ meta {
 post {
   url: http://localhost:3000/api/v1/reservas
   body: json
-  auth: inherit
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTksImVtYWlsIjoiam9uYXRhbmJvcmJhMTk4N0Bob3RtYWlsLmNvbSIsInJvbCI6MywiaWF0IjoxNzYyMTI2Mzc3LCJleHAiOjE3NjIxMjk5Nzd9.f6CvtEl82A9x-_qTlakvVGPK4UjMsZjtTHPX31TCRdA
 }
 
 body:json {
   {
-    "fecha_reserva":"28/10/2025",
-    "salon_id":12,
+    "fecha_reserva":"3/11/2025",
+    "salon_id":5,
     "usuario_id":3,
     "turno_id":2,
     "foto_cumpleaniero":"foto_cumpleaniero",
-    "tematica": "princesas",
+    "tematica": "F1",
     "importe_salon":150000,
     "importe_total":15000,
     "servicios":[{
-      "servicio_id":1,
-      "importe":950
+      "servicio_id":6,
+      "importe":15000
     }
     
     ]

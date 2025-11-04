@@ -1,13 +1,17 @@
 meta {
-  name: Obtener Servicio por ID 
+  name: Obtener Servicio por ID
   type: http
   seq: 5
 }
 
 get {
-  url: http://localhost:3000/api/v1/servicios/
+  url: http://localhost:3000/api/v1/servicios/6
   body: none
-  auth: inherit
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsImVtYWlsIjoibWx1bmFAZ21haWwuY29tIiwicm9sIjozLCJpYXQiOjE3NjIxMjAzNTYsImV4cCI6MTc2MjEyMzk1Nn0.Uefy_zceHCYpBwBAA06A9WDdRHQ1F0-G1S3UIaWanQA
 }
 
 settings {

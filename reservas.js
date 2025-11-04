@@ -1,21 +1,29 @@
 //Importo Express para crear el servidor    
 import express from 'express';
- 
+
 //Importamos handlebars para crear plantillas de correo html
 import handlebars from 'handlebars';
 //Importamos nodemailer para enviar correos
 import nodemailer from 'nodemailer';
+import morgan from 'morgan';
+import passport from 'passport';
+import fs from 'fs';
+import { configurarPassport} from './config/passport.js';
 //Importo fileURLToPath para manejar la ruta en formato URL a mi Index.js
 import { fileURLToPath } from 'url';
 // Importo readFile para leer archivos de forma asíncrona
 import { readFile } from 'fs/promises';
 //Importo path que me permite manejar rutas de archivos y directorios en dstintos sistemas operativos
 import path from 'path';
+// Swagger
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 import {serviciosRouter} from './rutas/v1/servicios.rutas.js';
 import {salonesRouter } from './rutas/v1/salones.rutas.js';
 import {usuariosRouter } from './rutas/v1/usuarios.rutas.js';
 import { turnosRouter} from './rutas/v1/turnos.rutas.js';
 import { reservasRouter } from './rutas/v1/reservas.rutas.js';
+import { authRouter } from './rutas/v1/auth.rutas.js';
 //import { reservasRouter } from './rutas/v1/reservas.rutas.js';
 
 
@@ -25,9 +33,81 @@ const app = express();
 //Todo lo que este en el body de la peticion lo voy a recibir en formato JSON
 app.use(express.json());// Defino una ruta para el endpoint /estado
 
+
+//Configuro passport
+
+configurarPassport(passport);
+app.use(passport.initialize());
+
+//morgan
+let log = fs.createWriteStream('./access.log', { flags: 'a' })
+app.use(morgan('combined')) 
+app.use(morgan('combined', { stream: log })) 
+
+
+// Swagger configuration
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'API Reservas',
+      version: '1.0.0',
+      description: 'Documentación de la API de Reservas',
+    },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    schemas: {
+        Reserva: {
+          type: 'object',
+          properties: {
+            reserva_id: { type: 'integer' },
+            fecha_reserva: { type: 'string', format: 'date' },
+            salon_id: { type: 'integer' },
+            usuario_id: { type: 'integer' },
+            turno_id: { type: 'integer' },
+            foto_cumpleaniero: { type: 'string', nullable: true },
+            tematica: { type: 'string' },
+            importe_salon: { type: 'number' },
+            importe_total: { type: 'number' },
+            servicios: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  servicio_id: { type: 'integer' },
+                  importe: { type: 'number' }
+                }
+              }
+            }
+          }
+        }},
+    servers: [
+      {
+        url: `http://localhost:${process.env.PUERTO || 3000}`,
+      },
+    ],
+  },
+  apis: ['./rutas/**/*.js'],
+};
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+
+
 app.get('/estado', (req, res) => {
     res.json({'ok' : true });
 });    
+
+//Login
+app.use("/api/v1/auth", authRouter); 
 
 // Defino la ruta base para el router de servicios
 app.use("/api/v1/servicios", serviciosRouter);

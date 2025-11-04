@@ -2,6 +2,12 @@ import { conexion } from "./conexion.js";
 
 export default class Reservas {
 
+    buscarPropias = async(usuario_id) => {
+        const sql = 'SELECT * FROM reservas WHERE activo = 1 AND usuario_id = ?';
+        const [reservas] = await conexion.execute(sql, [usuario_id]);
+        return reservas;
+    }
+    
     buscarTodos = async() => {
         const sql = 'SELECT * FROM reservas WHERE activo = 1';
         const [reservas] = await conexion.execute(sql);
@@ -45,24 +51,63 @@ export default class Reservas {
     }
 
     
+
+    
     datosParaNotificacion = async(reserva_id) => {
-        const sql = `SELECT 
-                r.fecha_reserva as fecha,
-                s.titulo as salon,
-                t.orden as turno,
-                u.nombre_usuario as correoElectronico
-            FROM reservas as r
-            INNER JOIN salones as s on s.salon_id = r.salon_id 
-            INNER JOIN turnos as t on t.turno_id = r.turno_id
-            INNER JOIN usuarios as u on u.usuario_id = r.usuario_id
-            WHERE r.activo = 1 and r.reserva_id = ?`;
-
-        const [reserva] = await conexion.execute(sql, [reserva_id]);
-        if(reserva.length === 0){
-            return null;
+        try {
+            const sql = `CALL obtenerDatosNotificacion(?)`;
+            const [result] = await conexion.execute(sql, [reserva_id]);
+            const fila = Array.isArray(result) ? (Array.isArray(result[0]) ? result[0][0] : result[0]) : result;
+            if(!fila){
+                return null;
+            }
+            return fila;
+        } catch (error) {
+            if (error?.code === 'ER_SP_DOES_NOT_EXIST') {
+                // Fallback: construir datos desde las tablas
+                const fallbackSql = `
+                    SELECT 
+                        r.fecha_reserva AS fecha,
+                        s.titulo AS salon,
+                        CAST(t.turno_id AS CHAR) AS turno,
+                        u.nombre_usuario AS correoElectronico
+                    FROM reservas r
+                    INNER JOIN salones s ON s.salon_id = r.salon_id
+                    INNER JOIN turnos t ON t.turno_id = r.turno_id
+                    INNER JOIN usuarios u ON u.usuario_id = r.usuario_id
+                    WHERE r.reserva_id = ?
+                    LIMIT 1
+                `;
+                const [rows] = await conexion.query(fallbackSql, [reserva_id]);
+                return rows && rows[0] ? rows[0] : null;
+            }
+            throw error;
         }
+    }
 
-        return reserva[0];
+    buscarDatosReporteCsv = async() => {
+        try {
+            const sql = `CALL reporte_csv()`;
+            const [result] = await conexion.query(sql);
+            return result[0];
+        } catch (error) {
+            // Fallback si el SP no existe: construir datos con un SELECT
+            if (error?.code === 'ER_SP_DOES_NOT_EXIST') {
+                const fallbackSql = `
+                    SELECT 
+                        r.fecha_reserva,
+                        s.titulo,
+                        r.reserva_id AS orden
+                    FROM reservas r
+                    INNER JOIN salones s ON s.salon_id = r.salon_id
+                    WHERE r.activo = 1
+                    ORDER BY r.fecha_reserva DESC, r.reserva_id DESC
+                `;
+                const [rows] = await conexion.query(fallbackSql);
+                return rows;
+            }
+            throw error;
+        }
     }
 }// import {conexion} from './conexion.js';
 

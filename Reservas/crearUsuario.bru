@@ -7,16 +7,24 @@ meta {
 post {
   url: http://localhost:3000/api/v1/usuarios/registro
   body: json
-  auth: inherit
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsImVtYWlsIjoiYWxleEBnbWFpbC5jb20iLCJyb2wiOjEsImlhdCI6MTc2MjEyNDc3MCwiZXhwIjoxNzYyMTI4MzcwfQ.tPjBOkgzldM4RJv58x2DkiGs97cwSb7aliQdIE0uRJ8
 }
 
 body:json {
   {
-    "nombre":"Luna", 
-    "apellido":"lalona",
-    "nombre_usuario":"luna@jayahoo.com", 
-    "contrasenia":"12345", 
-    "tipo_usuario": 2
+    "nombre":"Jonatan", 
+    "apellido":"Borba",
+    "nombre_usuario":"jonatanborba1987@hotmail.com", 
+    "contrasenia":"1234", 
+    "tipo_usuario": 3
   }
 }
 

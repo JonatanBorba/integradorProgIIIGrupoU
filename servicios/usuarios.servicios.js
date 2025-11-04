@@ -1,6 +1,6 @@
 import UsuariosDB from "../db/usuariosDB.js";
 import bcrypt from 'bcryptjs';
-import { generarToken } from "../utiles/generarToken.js";
+
 
 export default class UsuariosServicios {
     constructor () {
@@ -66,11 +66,13 @@ export default class UsuariosServicios {
             if (!usuario) {
                 throw new Error('nombre de Usuario no encontrado');
             }
+            
             const contraseniaValida = await bcrypt.compare(contrasenia, usuario.contrasenia);
             if (!contraseniaValida) {
                 throw new Error('Contraseña incorrecta');
             }
-            return generarToken(usuario.usuario_id);    
+            const { contrasenia: _omit, ...usuarioSinContrasenia } = usuario;
+            return usuarioSinContrasenia;    
 
 }catch(error){
     throw new Error('Error al iniciar sesión: ' + error.message);
