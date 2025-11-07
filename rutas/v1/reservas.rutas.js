@@ -173,18 +173,24 @@
   *                     importe_salon:
   *                       type: number
   *                       example: 150000
-  *                     importe_total:
-  *                       type: number
-  *                       example: 200000
-  *       400:
-  *         description: Datos inválidos
   */
- 
+ /**
+  * @swagger
+  * /api/v1/reservas/informe:
+  *   get:
+  *     summary: Informe de reservas
+  *     tags: [Reservas]
+  *     security:
+  *       - bearerAuth: []
+  *     responses:
+  *       200:
+  *         description: Informe generado
+  */
  /**
   * @swagger
   * /api/v1/reservas/{reserva_id}:
-  *   get:
-  *     summary: Obtener reserva por ID
+  *   delete:
+  *     summary: Elimina una reserva (borrado lógico)
   *     tags: [Reservas]
   *     security:
   *       - bearerAuth: []
@@ -196,29 +202,30 @@
   *           type: integer
   *     responses:
   *       200:
-  *         description: Detalle de la reserva
+  *         description: Reserva eliminada correctamente
+  *         content:
+  *           application/json:
+  *             schema:
+  *               type: object
+  *               properties:
+  *                 estado:
+  *                   type: boolean
+  *                   example: true
+  *                 mensaje:
+  *                   type: string
+  *                   example: "Reserva eliminada correctamente"
+  *       403:
+  *         description: No autorizado para eliminar esta reserva
   *       404:
-  *         description: No encontrada
+  *         description: Reserva no encontrada
+  *       500:
+  *         description: Error del servidor al eliminar la reserva
   */
- 
- /**
-  * @swagger
-  * /api/v1/reservas/informe:
-  *   get:
-  *     summary: Obtener informe de reservas
-  *     tags: [Reservas]
-  *     security:
-  *       - bearerAuth: []
-  *     responses:
-  *       200:
-  *         description: Informe generado
-  */
-
  // Informe: solo administrador (1)
  router.get('/informe', autorizarUsuarios([1]), reservasControlador.informe);
- // Listado general: admin (1), empleado (2), cliente (3)
+  // Listado general: admin (1), empleado (2), cliente (3)
  router.get('/', autorizarUsuarios([1,2,3]), reservasControlador.buscarTodos);
- // Detalle por id: admin (1), empleado (2), cliente (3)
+  // Detalle por id: admin (1), empleado (2), cliente (3)
  router.get('/:reserva_id', autorizarUsuarios([1,2,3]), reservasControlador.buscarPorId);
  router.post('/', autorizarUsuarios([1,3]), 
     [
@@ -235,6 +242,43 @@
         validarCampos
     ],
     reservasControlador.crear);
+
+/**
+ * @swagger
+ * /api/v1/reservas/{reserva_id}:
+ *   delete:
+ *     summary: Elimina una reserva (borrado lógico)
+ *     tags: [Reservas]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: reserva_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Reserva eliminada correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 estado:
+ *                   type: boolean
+ *                   example: true
+ *                 mensaje:
+ *                   type: string
+ *                   example: "Reserva eliminada correctamente"
+ *       403:
+ *         description: No autorizado para eliminar esta reserva
+ *       404:
+ *         description: Reserva no encontrada
+ *       500:
+ *         description: Error del servidor al eliminar la reserva
+ */
+router.delete('/:reserva_id', autorizarUsuarios([1,3]), reservasControlador.deleteReservaPorId);    
 
 export{router as reservasRouter};
 // router.post('/', reservasControlador.postReservas);

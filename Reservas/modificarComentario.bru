@@ -1,0 +1,28 @@
+meta {
+  name: modificarComentario
+  type: http
+  seq: 25
+}
+
+put {
+  url: http://localhost:3000/api/v1/comentarios/
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsImVtYWlsIjoiYWxleEBnbWFpbC5jb20iLCJyb2wiOjEsImlhdCI6MTc2MjQzOTY3OCwiZXhwIjoxNzYyNDU0MDc4fQ.KVr3l-vLE9CN1E7AjALAbHrp0WJ16CWd-4Uz3eAnuN
+}
+
+body:json {
+  {
+    "reserva_id":6,
+    "usuario_id":1,
+    "comentario":"Este es el comentario editado"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -23,7 +23,7 @@ export default class SalonesDB {
         return resultado.affectedRows>0 ? {id,titulo,direccion,capacidad,importe} : null;
     };
     eliminarPorId = async(id) => {
-        const [resultado] = await conexion.query('DELETE FROM salones WHERE salon_id = ?', [id]);
+        const [resultado] = await conexion.query('UPDATE salones SET activo = 0 WHERE salon_id = ?', [id]);
         return resultado;
     };    
     

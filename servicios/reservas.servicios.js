@@ -1,5 +1,6 @@
 import ReservasDB from "../db/reservasDB.js";
 import ReservasServiciosDB from "../db/reservas_servicioDB.js";
+import ComentariosDB from "../db/comentariosDB.js";
 import NotificacionesServicio from "./notificacionesServicios.js";
 import InformeServicio from "./informesServicio.js";
 
@@ -7,6 +8,7 @@ export default class ReservasServicios {
     constructor(){
         this.reservasDB = new ReservasDB();
         this.reservas_serviciosDB = new ReservasServiciosDB();
+        this.comentariosDB = new ComentariosDB();
         this.notificacionesServicios = new NotificacionesServicio();
         this.informes = new InformeServicio();
     }
@@ -15,15 +17,23 @@ export default class ReservasServicios {
         if (usuario && Number(usuario.tipo_usuario) < 3) {
             return this.reservasDB.buscarTodos();
         }
-        // clientes (tipo_usuario >= 3) ven solo sus reservas
+        // clientes (rol 3) ven solo sus reservas
         if (usuario?.usuario_id) {
             return this.reservasDB.buscarPropias(usuario.usuario_id);
         }
         return [];
     }
 
-    buscarPorId = (reserva_id) => {
-        return this.reservasDB.buscarPorId(reserva_id);
+    buscarPorId = async (reserva_id) => {
+        const reserva = await this.reservasDB.buscarPorId(reserva_id);
+        if (!reserva) return null;
+        try {
+            const comentarios = await this.comentariosDB.obtenerPorReserva(reserva_id);
+            reserva.comentarios = comentarios || [];
+        } catch (e) {
+            reserva.comentarios = [];
+        }
+        return reserva;
     }
 
     crear = async (reserva, usuarioAuth = null) => {
@@ -56,10 +66,10 @@ export default class ReservasServicios {
             return null;
         }
 
-        // CREAR RELACIONES RESERVA-SERVICIOS
+        // Asociar servicios a la reserva
         await this.reservas_serviciosDB.crear(result.reserva_id, servicios);     
 
-        // Notificación por correo (no debe romper el flujo si falla)
+        // Notificación por correo 
         try {
             const fila = await this.reservasDB.datosParaNotificacion(result.reserva_id);
             // Normalizar campos esperados por el servicio de notificaciones
@@ -112,70 +122,30 @@ export default class ReservasServicios {
             };
         }
         return null;
-    }
+    };
+    eliminarPorId = async (id) => {
+        try {
+            const existeReserva = await this.buscarPorId(id);
+            if (!existeReserva) { 
+                return null;
+            }
+            
+            const eliminado = await this.reservasDB.eliminarPorId(id);
+            
+            if (eliminado) {
+                return { mensaje: 'Reserva eliminada correctamente' };
+            } else {
+                throw new Error('No se pudo eliminar la reserva');
+            }       
+        } catch (error) {
+            throw new Error('Error al eliminar la reserva: ' + error.message);      
+        }
  
-    
+    }; 
     
 }    
 
 
 
-
-
-
-
-
-//     constructor () {
-//         this.reservasDB = new ReservasDB();
-
-//     }
-//     agregarReserva = async(reservas) => {
-//         try {
-//             return await this.reservasDB.agregarReserva(reservas);
-
-//         }catch (error) {
-//             throw new Error('Error al agregar la reserva: ' + error.message);
-//         }
-      
-
-//     };
-//     obtenerReservaPorId = async(id) => { 
-//         try {
-//             return await this.reservasDB.obtenerPorId(id);
-//         }catch (error) {
-//             throw new Error('Error al obtener la resrva por ID' + error.message);
-//         }
-    
-
-//     };
-//     obtener = async() => {
-//         try {
-//             return await this.reservasDB.obtener();
-//         }catch (error) {
-//             throw new Error('Error al obtener las reservas: ' + error.message);
-//         }
-//     };
-//     modificarPorId = async(id, body) => {
-//         try {
-//             const existeReserva = await this.obtenerReservaPorId(id);
-//             if (!existeReserva) { 
-//                 return null;
-//             }
-//             return await this.reservasDB.modificarPorId(id, body);
-//         }catch (error) {
-//             throw new Error('Error al modificar la reserva: ' + error.message);
-//         }
-//     };
-//     eliminarPorId = async(id) => {
-//         try {
-//             const existeReserva = await this.obtenerReservaPorId(id);
-//             if (!existeReserva) { 
-//                 return null;
-//             }
-//             return await this.reservaDB.eliminarPorId(id);
-//         }catch (error) {
-//             throw new Error('Error al eliminar la reserva: ' + error.message);
-//         }
-//     };    
-// };          
+   
 

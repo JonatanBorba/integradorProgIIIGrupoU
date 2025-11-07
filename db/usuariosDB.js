@@ -19,11 +19,14 @@ export default class UsuariosDB {
     };
     modificarPorId = async(id, body) => {
         const {nombre, apellido, nombre_usuario, contrasenia, tipo_usuario} = body;
-        const [resultado] = await conexion.query('UPDATE usuarios SET nombre = ?, apellido = ?, nombre_usuario = ?, contrasenia = ?, tipo_usuario = ? WHERE usuario_id = ?', [nombre, apellido, nombre_usuario, contrasenia, tipo_usuario, id]);
+        const [resultado] = await conexion.query(
+            'UPDATE usuarios SET nombre = ?, apellido = ?, nombre_usuario = ?, contrasenia = ?, tipo_usuario = ? WHERE usuario_id = ?',
+            [nombre, apellido, nombre_usuario, contrasenia, tipo_usuario, id]
+        );
         return resultado.affectedRows>0 ? {id, nombre, apellido, nombre_usuario, contrasenia, tipo_usuario} : null;
     };
     eliminarPorId = async(id) => {
-        const [resultado] = await conexion.query('DELETE FROM usuarios WHERE usuario_id = ?', [id]);
+        const [resultado] = await conexion.query('UPDATE usuarios SET activo = 0 WHERE usuario_id = ?', [id]);
         return resultado;
     };    
     

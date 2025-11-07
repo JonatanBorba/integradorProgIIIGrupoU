@@ -1,6 +1,6 @@
 //Importo Express para crear el servidor    
 import express from 'express';
-
+ 
 //Importamos handlebars para crear plantillas de correo html
 import handlebars from 'handlebars';
 //Importamos nodemailer para enviar correos
@@ -15,20 +15,42 @@ import { fileURLToPath } from 'url';
 import { readFile } from 'fs/promises';
 //Importo path que me permite manejar rutas de archivos y directorios en dstintos sistemas operativos
 import path from 'path';
-// Swagger
-import swaggerJsdoc from 'swagger-jsdoc';
-import swaggerUi from 'swagger-ui-express';
 import {serviciosRouter} from './rutas/v1/servicios.rutas.js';
 import {salonesRouter } from './rutas/v1/salones.rutas.js';
 import {usuariosRouter } from './rutas/v1/usuarios.rutas.js';
 import { turnosRouter} from './rutas/v1/turnos.rutas.js';
 import { reservasRouter } from './rutas/v1/reservas.rutas.js';
 import { authRouter } from './rutas/v1/auth.rutas.js';
+import { comentariosRouter } from './rutas/v1/comentarios.rutas.js';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 //import { reservasRouter } from './rutas/v1/reservas.rutas.js';
 
 
 //Creo una instancia de Express
 const app = express();
+
+
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'API Reservas',
+      version: '1.0.0',
+      description: 'Documentación de la API de Reservas',
+    },
+    components: {
+      securitySchemes: {
+        bearerAuth: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+      },
+    },
+    servers: [{ url: `http://localhost:${process.env.PUERTO || 3000}` }],
+  },
+  apis: ['./rutas/**/*.js'], 
+};
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 //Todo lo que este en el body de la peticion lo voy a recibir en formato JSON
 app.use(express.json());// Defino una ruta para el endpoint /estado
@@ -45,66 +67,14 @@ app.use(morgan('combined'))
 app.use(morgan('combined', { stream: log })) 
 
 
-// Swagger configuration
-const swaggerOptions = {
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'API Reservas',
-      version: '1.0.0',
-      description: 'Documentación de la API de Reservas',
-    },
-    components: {
-      securitySchemes: {
-        bearerAuth: {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT',
-        },
-      },
-    },
-    schemas: {
-        Reserva: {
-          type: 'object',
-          properties: {
-            reserva_id: { type: 'integer' },
-            fecha_reserva: { type: 'string', format: 'date' },
-            salon_id: { type: 'integer' },
-            usuario_id: { type: 'integer' },
-            turno_id: { type: 'integer' },
-            foto_cumpleaniero: { type: 'string', nullable: true },
-            tematica: { type: 'string' },
-            importe_salon: { type: 'number' },
-            importe_total: { type: 'number' },
-            servicios: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  servicio_id: { type: 'integer' },
-                  importe: { type: 'number' }
-                }
-              }
-            }
-          }
-        }},
-    servers: [
-      {
-        url: `http://localhost:${process.env.PUERTO || 3000}`,
-      },
-    ],
-  },
-  apis: ['./rutas/**/*.js'],
-};
-
-const swaggerSpec = swaggerJsdoc(swaggerOptions);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-
 
 app.get('/estado', (req, res) => {
     res.json({'ok' : true });
 });    
+
+
+//Defino la ruta para comentarios
+app.use("/api/v1/comentarios", comentariosRouter);
 
 //Login
 app.use("/api/v1/auth", authRouter); 
@@ -135,37 +105,37 @@ app.post('/notificacion', async(req, res) => {
     }
     try {
 
-        const { fecha, salon, turno, correoDestino } = req.body;
+//         const { fecha, salon, turno, correoDestino } = req.body;
 
-        const __filename = fileURLToPath(import.meta.url);
-        const __dirname = path.dirname(__filename);
+//         const __filename = fileURLToPath(import.meta.url);
+//         const __dirname = path.dirname(__filename);
 
-        const plantilla = path.join(__dirname, 'utiles','handlebars','plantilla.hbs');
+//         const plantilla = path.join(__dirname, 'utiles','handlebars','plantilla.hbs');
         
-        console.log(plantilla);
+//         console.log(plantilla);
 
-        const datos = await readFile(plantilla, 'utf-8');
+//         const datos = await readFile(plantilla, 'utf-8');
 
-        const template = handlebars.compile(datos);
+//         const template = handlebars.compile(datos);
 
-        var html = template({fecha : fecha, salon : salon, turno : turno});
+//         var html = template({fecha : fecha, salon : salon, turno : turno});
         
-       // console.log(html);
+//        // console.log(html);
 
-       const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.USER,
-            pass: process.env.PASS,
-        }
-       });
+//        const transporter = nodemailer.createTransport({
+//         service: 'gmail',
+//         auth: {
+//             user: process.env.USER,
+//             pass: process.env.PASS,
+//         }
+//        });
 
-    const opciones = {
-        to: correoDestino,
-        subject: 'Notificación Reserva',
-        html: html
+//     const opciones = {
+//         to: correoDestino,
+//         subject: 'Notificación Reserva',
+//         html: html
 
-    }    
+//     }    
 
     transporter.sendMail(opciones, (error, info) => {
         if(error) {

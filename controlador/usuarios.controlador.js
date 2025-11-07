@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import UsuariosServicios from "../servicios/usuarios.servicios.js";
+ 
 
 
 export default class UsuariosControlador {
@@ -19,25 +20,7 @@ export default class UsuariosControlador {
         res.status(201).json(nuevoUsuario);
 
     };
-    // inicioSesion = async(req, res) => {
-    //     try {
-    //         const usuario = await this.usuariosServicio.inicioSesion(req.body.nombre_usuario, req.body.contrasenia);
-    //         const token = jwt.sign(
-    //             {
-    //                 id: usuario.usuario_id,
-    //                 email: usuario.nombre_usuario,
-    //                 rol: usuario.tipo_usuario,
-    //             },
-    //             process.env.JWT_SECRET || process.env.SECRETA_JWT || "tu_clave_secreta_predeterminada",
-    //             { expiresIn: "1h" }
-    //         );
-    //         return res.status(200).json({ estado: true, token });
-
-    //     }catch (error) {
-    //         return res.status(500).json({mensaje: 'Error interno del servidor.'});
-    //     }
-        
-    // }
+   
     getUsuariosPorId = async(req, res) => {
         const idConsultar = req.params.id;
         const usuario = await this.usuariosServicio.obtenerUsuarioPorId(idConsultar);

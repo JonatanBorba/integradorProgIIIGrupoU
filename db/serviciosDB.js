@@ -23,7 +23,7 @@ export default class ServiciosDB {
         return resultado.affectedRows>0 ? {id,descripcion,importe} : null;
     };
     eliminarPorId = async(id) => {
-        const [resultado] = await conexion.query('DELETE FROM servicios WHERE servicio_id = ?', [id]);
+        const [resultado] = await conexion.query('UPDATE servicios SET activo = 0 WHERE servicio_id = ?', [id]);
         return resultado;
     };    
     
