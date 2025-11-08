@@ -132,8 +132,7 @@ crear = async (req, res) => {
             if (!reservaExistente) {
                 return res.status(404).json({ estado: false, mensaje: 'Reserva no encontrada' });
             }
-            //solo administadores pueden eliminar cualquier reserva
-            // los clientes solo pueden eliminar sus propias reservas
+            
         
             if (req.user.tipo_usuario === 3 && reservaExistente.usuario_id !== req.user.usuario_id) {
                 return res.status(403).json({ estado: false, mensaje: 'No autorizado para eliminar esta reserva' });

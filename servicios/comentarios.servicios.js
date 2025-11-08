@@ -63,7 +63,7 @@ export default class ComentariosServicio {
         throw new Error('El comentario no puede tener más de 500 caracteres');
       }
 
-      // Regla de negocio: una reserva solo puede tener un comentario
+        
       const existentes = await this.comentariosDB.obtenerPorReserva(reserva_id);
       if (existentes && existentes.length > 0) {
         throw new Error('La reserva ya tiene un comentario');
@@ -169,7 +169,7 @@ export default class ComentariosServicio {
         throw new Error('El comentario no pertenece a la reserva indicada');
       }
 
-      // Verificar permisos (solo el autor puede actualizar)
+      
       if (comentario.usuario_id !== usuario_id && !esAdmin) {
         throw new Error('No autorizado para actualizar este comentario');
       }

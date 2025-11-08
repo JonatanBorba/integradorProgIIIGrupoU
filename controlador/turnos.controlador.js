@@ -43,12 +43,7 @@ export default class TurnosControlador {
             res.status(500).json({ mensaje: 'Error interno del servidor' });
         }   
     
-    /*getTurnoPorId = async(req, res) => {
-        const idConsultar = req.params.id;
-        const turno = await this.turnosServicio.obtenerTurno(idConsultar);
-        turno ? res.status(200).json(turno) : res.status(404).json({mensaje: 'Usuario no encontrado'});
-
-    };*/
+    
    
 }
 }

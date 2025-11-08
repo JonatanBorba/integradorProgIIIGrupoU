@@ -52,7 +52,7 @@ export default class ComentariosControlador {
       const { reserva_id } = req.params;
       const { comentario: nuevoComentario } = req.body;
       const usuario_id = req.user.usuario_id;
-      const esAdmin = req.user.tipo_usuario === 1; // Asumiendo que 1 es admin
+      const esAdmin = req.user.tipo_usuario === 1;
 
       if (!reserva_id || !nuevoComentario) {
         return res.status(400).json({
@@ -130,8 +130,7 @@ export default class ComentariosControlador {
     try {
       const { comentario_id } = req.params;
       const usuario_id = req.user.usuario_id;
-      const esAdmin = req.user.tipo_usuario === 1; // Asumiendo que 1 es admin
-
+      const esAdmin = req.user.tipo_usuario === 1; 
       if (!comentario_id) {
         return res.status(400).json({
           estado: false,
@@ -172,7 +171,7 @@ export default class ComentariosControlador {
       const { comentario_id } = req.params;
       const { reserva_id, comentario: nuevoComentario } = req.body;
       const usuario_id = req.user.usuario_id;
-      const esAdmin = req.user.tipo_usuario === 1; // Asumiendo que 1 es admin
+      const esAdmin = req.user.tipo_usuario === 1; 
 
       if (!reserva_id || !comentario_id || !nuevoComentario) {
         return res.status(400).json({

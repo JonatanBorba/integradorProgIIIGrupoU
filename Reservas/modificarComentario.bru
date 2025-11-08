@@ -5,7 +5,7 @@ meta {
 }
 
 put {
-  url: http://localhost:3000/api/v1/comentarios/
+  url: http://localhost:3000/api/v1/comentarios/3
   body: json
   auth: bearer
 }
@@ -16,8 +16,7 @@ auth:bearer {
 
 body:json {
   {
-    "reserva_id":6,
-    "usuario_id":1,
+   
     "comentario":"Este es el comentario editado"
   }
 }

@@ -66,20 +66,20 @@ export default class ReservasServicios {
             return null;
         }
 
-        // Asociar servicios a la reserva
+       
         await this.reservas_serviciosDB.crear(result.reserva_id, servicios);     
 
-        // Notificación por correo 
+       
         try {
             const fila = await this.reservasDB.datosParaNotificacion(result.reserva_id);
-            // Normalizar campos esperados por el servicio de notificaciones
+            
             const datosCorreo = {
                 fecha: fila?.fecha || fila?.fecha_reserva || null,
                 salon: fila?.salon || fila?.titulo || fila?.salon_titulo || null,
                 turno: fila?.turno || fila?.turno_nombre || String(fila?.turno_id ?? ''),
-                // email del cliente
+                
                 correoCliente: (usuarioAuth?.nombre_usuario) || fila?.correoCliente || fila?.correoElectronico || fila?.email || fila?.nombre_usuario || null,
-                // opcional: admins por ENV si no se provee desde la DB
+                
                 correosAdmin: []
             };
             await this.notificacionesServicios.enviarCorreo(datosCorreo);
@@ -91,7 +91,7 @@ export default class ReservasServicios {
             }
         }
 
-        // RETORNO LA RESERVA CREADA
+        
         return this.reservasDB.buscarPorId(result.reserva_id);
     }
 

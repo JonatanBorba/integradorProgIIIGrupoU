@@ -7,9 +7,14 @@ meta {
 get {
   url: http://localhost:3000/api/v1/salones/6
   body: none
-  auth: inherit
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsImVtYWlsIjoiYWxleEBnbWFpbC5jb20iLCJyb2wiOjEsImlhdCI6MTc2MjQzODQzMywiZXhwIjoxNzYyNDUyODMzfQ.zmFGIZ4FnuT2Int9JIKbZM_BmKVpC1JXkKE4Z5T4nS4
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

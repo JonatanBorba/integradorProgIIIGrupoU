@@ -24,8 +24,6 @@ import { authRouter } from './rutas/v1/auth.rutas.js';
 import { comentariosRouter } from './rutas/v1/comentarios.rutas.js';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-//import { reservasRouter } from './rutas/v1/reservas.rutas.js';
-
 
 //Creo una instancia de Express
 const app = express();
@@ -90,14 +88,9 @@ app.use("/api/v1/usuarios", usuariosRouter);
 
 //Defino la ruta para Reservas
 app.use("/api/v1/reservas", reservasRouter);
-//Defino la ruta base para el router de turnos
-
 
 app.use("/api/v1/turnos", turnosRouter);
-// Defino la ruta base para el router de reservas
-//app.use("/api/v1/reservas", reservasRouter);
 
-//Creo una Ruta para enviar las notificaciones al administrador y al usuario
 app.post('/notificacion', async(req, res) => {
     console.log(req.body)
     if(!req.body.fecha || !req.body.salon || !req.body.turno || !req.body.correoDestino) {
@@ -105,37 +98,6 @@ app.post('/notificacion', async(req, res) => {
     }
     try {
 
-//         const { fecha, salon, turno, correoDestino } = req.body;
-
-//         const __filename = fileURLToPath(import.meta.url);
-//         const __dirname = path.dirname(__filename);
-
-//         const plantilla = path.join(__dirname, 'utiles','handlebars','plantilla.hbs');
-        
-//         console.log(plantilla);
-
-//         const datos = await readFile(plantilla, 'utf-8');
-
-//         const template = handlebars.compile(datos);
-
-//         var html = template({fecha : fecha, salon : salon, turno : turno});
-        
-//        // console.log(html);
-
-//        const transporter = nodemailer.createTransport({
-//         service: 'gmail',
-//         auth: {
-//             user: process.env.USER,
-//             pass: process.env.PASS,
-//         }
-//        });
-
-//     const opciones = {
-//         to: correoDestino,
-//         subject: 'Notificación Reserva',
-//         html: html
-
-//     }    
 
     transporter.sendMail(opciones, (error, info) => {
         if(error) {

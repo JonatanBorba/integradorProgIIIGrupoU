@@ -15,7 +15,7 @@ export default class NotificacionesServicio {
             let correosAdminFinal = [];
 
             if (Array.isArray(datosCorreo)) {
-                // Formato del profe: [ [ {fecha,salon,turno}, ... ], [ {correoAdmin}, ... ] ]
+                
                 const arrReservas = Array.isArray(datosCorreo[0]) ? datosCorreo[0] : [];
                 const primera = arrReservas[0] || {};
                 fecha = primera.fecha ?? primera.fecha_reserva ?? null;
@@ -23,10 +23,10 @@ export default class NotificacionesServicio {
                 turno = primera.turno ?? String(primera.turno_id ?? '');
                 const adminsArr = Array.isArray(datosCorreo[1]) ? datosCorreo[1] : [];
                 correosAdminFinal = adminsArr.map(a => a?.correoAdmin).filter(Boolean);
-                // Si se envía el cliente en una tercera posición opcional
+                
                 correoClienteFinal = datosCorreo[2]?.correoCliente || null;
             } else {
-                // Formato del proyecto: { fecha, salon, turno, correoCliente, correosAdmin? }
+                
                 fecha = datosCorreo?.fecha ?? datosCorreo?.fecha_reserva ?? null;
                 salon = datosCorreo?.salon ?? datosCorreo?.titulo ?? null;
                 turno = datosCorreo?.turno ?? String(datosCorreo?.turno_id ?? '');
@@ -36,7 +36,7 @@ export default class NotificacionesServicio {
                     : (process.env.ADMIN_EMAILS ? process.env.ADMIN_EMAILS.split(',').map(s => s.trim()).filter(Boolean) : []);
             }
 
-            // Validación de datos mínimos
+            
             if (!fecha || !salon || !turno) {
                 throw new Error('Faltan datos de la reserva');
             }
@@ -45,11 +45,11 @@ export default class NotificacionesServicio {
             const __dirname = path.dirname(__filename);
             const plantillaPath = path.join(__dirname, '../utiles/handlebars/plantilla.hbs');
             
-            // Leer plantilla
+           
             const plantilla = fs.readFileSync(plantillaPath, 'utf-8');
             const template = handlebars.compile(plantilla);
 
-            // Datos para la plantilla
+            
             const datos = {
                 fecha: fecha,
                 salon: salon,
@@ -59,7 +59,7 @@ export default class NotificacionesServicio {
 
             const correoHtml = template(datos);
             
-            // Configurar transporte
+            
             const transporter = nodemailer.createTransport({
                 service: 'gmail',
                 auth: {
@@ -68,7 +68,7 @@ export default class NotificacionesServicio {
                 }
             });
 
-            // Verificar conexión con el servidor de correo
+            
             try {
                 const ok = await transporter.verify();
                 console.log('[MAIL] Transport verify:', ok);
@@ -76,7 +76,7 @@ export default class NotificacionesServicio {
                 console.error('[MAIL] Transport verify FAILED:', verErr?.message);
             }
 
-            // Función para enviar correo
+            
             const enviarEmail = async (destinatario, asunto) => {
                 const mailOptions = {
                     from: process.env.CORREO,
@@ -94,7 +94,7 @@ export default class NotificacionesServicio {
                 }
             };
 
-            // Enviar a cliente y administradores
+           
             let resultados = {};
             if (correoClienteFinal) {
                 const infoCliente = await enviarEmail(correoClienteFinal, 'Confirmación de tu reserva');
@@ -126,7 +126,7 @@ export default class NotificacionesServicio {
         }
     }
 
-    // Mantener métodos adicionales
+    
     enviarMensaje = async (datos) => {} 
     enviarWhatsapp = async (datos) => {} 
     enviarNotificacionPush = async (datos) => {}

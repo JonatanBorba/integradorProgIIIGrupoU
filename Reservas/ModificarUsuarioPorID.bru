@@ -7,19 +7,24 @@ meta {
 put {
   url: http://localhost:3000/api/v1/usuarios/12
   body: json
-  auth: inherit
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTksImVtYWlsIjoiam9uYXRhbmJvcmJhMTk4N0Bob3RtYWlsLmNvbSIsInJvbCI6MywiaWF0IjoxNzYyNDcxMDUzLCJleHAiOjE3NjI0ODU0NTN9.uB-ANzvHQyhvnllhZNfnFtB6JCWdSAqINJtnG3evhwM
 }
 
 body:json {
   {
-    "nombre":"Mario", 
-    "apellido":"lalona",
-    "nombre_usuario":"231lolalona@jayahoo.com", 
-    "contrasenia":"cf584badd07d42dcb8506f8bae32aa96", 
+    "nombre": "Maria Laura",
+    "apellido": "lopez",
+    "nombre_usuario": "231lolalona@jayahoo.com",
+    "contrasenia": "cf584badd07d42dcb8506f8bae32aa96",
     "tipo_usuario": 2
   }
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

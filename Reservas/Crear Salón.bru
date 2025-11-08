@@ -7,13 +7,17 @@ meta {
 post {
   url: http://localhost:3000/api/v1/salones
   body: json
-  auth: inherit
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsImVtYWlsIjoiYWxleEBnbWFpbC5jb20iLCJyb2wiOjEsImlhdCI6MTc2MjQ3Nzk2MCwiZXhwIjoxNzYyNDkyMzYwfQ.VCmEAMei4yv-s_T1W4tzSEKMIjpsyUEjHGzS0r1TBRE
 }
 
 body:json {
   {
-    "titulo": "salon Nuevo",
-    "direccion": "Feliciano 2548",
+    "titulo": "Salon Embalse",
+    "direccion": "Ministro Pistarini",
     "capacidad": 40,
     "importe": 555
   }
@@ -21,4 +25,5 @@ body:json {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

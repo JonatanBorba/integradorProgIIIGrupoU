@@ -14,6 +14,10 @@ headers {
   Content-Type: application/json
 }
 
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsImVtYWlsIjoiYWxleEBnbWFpbC5jb20iLCJyb2wiOjEsImlhdCI6MTc2MjQzODQzMywiZXhwIjoxNzYyNDUyODMzfQ.zmFGIZ4FnuT2Int9JIKbZM_BmKVpC1JXkKE4Z5T4nS4
+}
+
 body:json {
   {
     "nombre_usuario": "alex@gmail.com",
@@ -23,4 +27,5 @@ body:json {
 
 settings {
   encodeUrl: true
+  timeout: 0
 }
