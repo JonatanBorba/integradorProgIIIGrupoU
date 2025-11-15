@@ -142,7 +142,51 @@ export default class ReservasServicios {
         }
  
     }; 
-    
+     modificar = async (reserva_id, datos, usuarioAuth = null) => {
+        const existente = await this.reservasDB.buscarPorId(reserva_id);
+        if (!existente) {
+            return { ok: false, motivo: 'no_encontrada' };
+        }
+
+        if (usuarioAuth && Number(usuarioAuth.tipo_usuario) === 3 && existente.usuario_id !== usuarioAuth.usuario_id) {
+            return { ok: false, motivo: 'no_autorizado' };
+        }
+
+        const {
+            fecha_reserva,
+            salon_id,
+            usuario_id,
+            turno_id,
+            foto_cumpleaniero,
+            tematica,
+            importe_salon,
+            importe_total,
+            servicios
+        } = datos;
+
+        const datosReserva = {
+            fecha_reserva,
+            salon_id,
+            usuario_id: (usuarioAuth && Number(usuarioAuth.tipo_usuario) === 3) ? existente.usuario_id : usuario_id,
+            turno_id,
+            foto_cumpleaniero,
+            tematica,
+            importe_salon,
+            importe_total
+        };
+
+        const actualizada = await this.reservasDB.actualizar(reserva_id, datosReserva);
+        if (!actualizada) {
+            return { ok: false, motivo: 'error_actualizar', mensaje: 'No se pudo actualizar la reserva' };
+        }
+
+        if (Array.isArray(servicios) && servicios.length > 0) {
+            await this.reservas_serviciosDB.reemplazar(reserva_id, servicios);
+        }
+
+        const reservaFinal = await this.reservasDB.buscarPorId(reserva_id);
+        return { ok: true, data: reservaFinal };
+    }
 }    
 
 

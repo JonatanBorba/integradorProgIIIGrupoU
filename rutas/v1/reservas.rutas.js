@@ -1,4 +1,4 @@
- import {check} from 'express-validator';
+import {check, param} from 'express-validator';
  import express from 'express';
  import ReservasControlador from '../../controlador/reservas.controlador.js';
  import { validarCampos } from '../../middlewares/validarCampos.js';
@@ -242,6 +242,24 @@
         validarCampos
     ],
     reservasControlador.crear);
+
+   router.put('/:reserva_id',
+   autorizarUsuarios([1,2,3]),
+   [
+     param('reserva_id', 'El ID de la reserva debe ser numérico.').isInt({ min: 1 }),
+     check('fecha_reserva', 'La fecha es necesaria.').notEmpty(),
+     check('salon_id', 'El salón es necesario y debe ser numérico.').isInt({ min: 1 }),
+     check('usuario_id', 'El usuario es necesario y debe ser numérico.').isInt({ min: 1 }),
+     check('turno_id', 'El turno es necesario y debe ser numérico.').isInt({ min: 1 }),
+     check('importe_salon', 'El importe del salón es obligatorio y debe ser numérico.').isFloat({ gt: 0 }),
+     check('importe_total', 'El importe total es obligatorio y debe ser numérico.').isFloat({ gt: 0 }),
+     check('servicios', 'Debe indicar los servicios de la reserva.').isArray({ min: 1 }),
+     check('servicios.*.servicio_id', 'Cada servicio debe incluir un ID numérico.').isInt({ min: 1 }),
+     check('servicios.*.importe', 'Cada servicio debe incluir un importe numérico.').isFloat({ gt: 0 }),
+     validarCampos
+   ],
+   reservasControlador.actualizarReserva
+);
 
 /**
  * @swagger

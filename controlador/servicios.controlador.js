@@ -8,12 +8,6 @@ export default class ServiciosControlador {
     }
     postServicios = async(req, res) => {
         const {descripcion,importe} = req.body;
-        if(!descripcion || !importe){
-            return res.status(400).json({mensaje: 'Faltan datos obligatorios'});
-        }
-        if(typeof descripcion !== 'string' || typeof importe !== 'number'){
-            return res.status(400).json({mensaje: 'El tipo de dato de algun campo es incorrecto'});
-        }
         const nuevoServicio = await this.serviciosServicio.agregarServicio({descripcion,importe});
         res.status(201).json(nuevoServicio);
 

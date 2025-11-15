@@ -11,13 +11,6 @@ export default class ComentariosControlador {
       const { reserva_id, comentario } = req.body;
       const usuario_id = req.user.usuario_id;
 
-      if (!reserva_id || !comentario) {
-        return res.status(400).json({
-          estado: false,
-          mensaje: 'Faltan campos obligatorios (reserva_id, comentario)',
-        });
-      }
-
       const resultado = await this.comentariosServicio.crear({
         reserva_id,
         usuario_id,
@@ -54,12 +47,7 @@ export default class ComentariosControlador {
       const usuario_id = req.user.usuario_id;
       const esAdmin = req.user.tipo_usuario === 1;
 
-      if (!reserva_id || !nuevoComentario) {
-        return res.status(400).json({
-          estado: false,
-          mensaje: 'Faltan campos obligatorios (comentario)',
-        });
-      }
+     
 
       const resultado = await this.comentariosServicio.actualizarPorReserva(
         reserva_id,
@@ -95,12 +83,7 @@ export default class ComentariosControlador {
     try {
       const { reserva_id } = req.params;
       
-      if (!reserva_id) {
-        return res.status(400).json({
-          estado: false,
-          mensaje: 'Se requiere el ID de la reserva',
-        });
-      }
+    
 
       const resultado = await this.comentariosServicio.obtenerPorReserva(reserva_id);
 
@@ -131,12 +114,7 @@ export default class ComentariosControlador {
       const { comentario_id } = req.params;
       const usuario_id = req.user.usuario_id;
       const esAdmin = req.user.tipo_usuario === 1; 
-      if (!comentario_id) {
-        return res.status(400).json({
-          estado: false,
-          mensaje: 'Se requiere el ID del comentario',
-        });
-      }
+    
 
       const resultado = await this.comentariosServicio.eliminar(
         comentario_id, 
@@ -172,14 +150,7 @@ export default class ComentariosControlador {
       const { reserva_id, comentario: nuevoComentario } = req.body;
       const usuario_id = req.user.usuario_id;
       const esAdmin = req.user.tipo_usuario === 1; 
-
-      if (!reserva_id || !comentario_id || !nuevoComentario) {
-        return res.status(400).json({
-          estado: false,
-          mensaje: 'Faltan campos obligatorios (reserva_id, comentario)',
-        });
-      }
-
+   
       const resultado = await this.comentariosServicio.actualizar(
         comentario_id,
         usuario_id,

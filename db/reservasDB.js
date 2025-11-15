@@ -50,7 +50,36 @@ export default class Reservas {
         return this.buscarPorId(result.insertId);
     }
 
-    
+    actualizar = async(reserva_id, datos) => {
+        const {
+            fecha_reserva,
+            salon_id,
+            usuario_id,
+            turno_id,
+            foto_cumpleaniero,
+            tematica,
+            importe_salon,
+            importe_total
+        } = datos;
+
+        const sql = `UPDATE reservas 
+            SET fecha_reserva = ?, salon_id = ?, usuario_id = ?, turno_id = ?, foto_cumpleaniero = ?, tematica = ?, importe_salon = ?, importe_total = ?
+            WHERE reserva_id = ?`;
+
+        const [result] = await conexion.execute(sql, [
+            fecha_reserva,
+            salon_id,
+            usuario_id,
+            turno_id,
+            foto_cumpleaniero,
+            tematica,
+            importe_salon,
+            importe_total,
+            reserva_id
+        ]);
+
+        return result.affectedRows > 0;
+    }
 
     
     datosParaNotificacion = async(reserva_id) => {
@@ -64,7 +93,6 @@ export default class Reservas {
             return fila;
         } catch (error) {
             if (error?.code === 'ER_SP_DOES_NOT_EXIST') {
-                // Fallback: construir datos desde las tablas
                 const fallbackSql = `
                     SELECT 
                         r.fecha_reserva AS fecha,
@@ -91,7 +119,6 @@ export default class Reservas {
             const [result] = await conexion.query(sql);
             return result[0];
         } catch (error) {
-            // Fallback si el SP no existe: construir datos con un SELECT
             if (error?.code === 'ER_SP_DOES_NOT_EXIST') {
                 const fallbackSql = `
                     SELECT 

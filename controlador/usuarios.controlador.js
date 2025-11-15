@@ -10,12 +10,6 @@ export default class UsuariosControlador {
     }
     postUsuarios = async(req, res) => {
         const {nombre, apellido, nombre_usuario, contrasenia, tipo_usuario} = req.body;
-        if(!nombre || !apellido || !nombre_usuario || !contrasenia || tipo_usuario == null){
-            return res.status(400).json({mensaje: 'Faltan datos obligatorios'});
-        }
-        if(typeof nombre !== 'string' || typeof apellido !== 'string' || typeof nombre_usuario !== 'string'|| typeof contrasenia !== 'string'|| typeof tipo_usuario !== 'number'){
-            return res.status(400).json({mensaje: 'El tipo de dato de algun campo es incorrecto'});
-        }
         const nuevoUsuario = await this.usuariosServicio.agregarUsuario({nombre, apellido, nombre_usuario, contrasenia, tipo_usuario});
         res.status(201).json(nuevoUsuario);
 
@@ -34,9 +28,20 @@ export default class UsuariosControlador {
 
     };
     putUsuariosPorId = async(req, res) => {    
-        const idModificar = req.params.id;
-        const usuarioModificar = await this.usuariosServicio.modificarUsuariosPorId(idModificar, req.body);
-        usuarioModificar ? res.status(200).json(usuarioModificar) : res.status(404).json({mensaje: 'Usuario no encontrado'});
+        try {
+            const idModificar = req.params.id;
+            const usuarioModificar = await this.usuariosServicio.modificarUsuariosPorId(idModificar, req.body);
+            if (!usuarioModificar) {
+                return res.status(404).json({mensaje: 'Usuario no encontrado'});
+            }
+            return res.status(200).json(usuarioModificar);
+        } catch (error) {
+            if (error.message.includes('El nombre de usuario ya está en uso')) {
+                return res.status(400).json({mensaje: error.message});
+            }
+            console.error('Error en PUT /usuarios/:id', error);
+            return res.status(500).json({mensaje: 'Error interno del servidor'});
+        }
 
     };
     deleteUsuarioPorId = async(req, res) => {

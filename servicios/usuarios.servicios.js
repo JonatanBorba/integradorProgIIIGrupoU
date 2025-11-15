@@ -44,6 +44,13 @@ export default class UsuariosServicios {
             if (!existeUsuario) {
                 return null;
             };
+            const { nombre_usuario } = body;
+            if (nombre_usuario && nombre_usuario !== existeUsuario.nombre_usuario) {
+                const usuarioExistente = await this.usuariosDB.ValidarPorEmail(nombre_usuario);
+                if (usuarioExistente && usuarioExistente.usuario_id !== Number(id)) {
+                    throw new Error('El nombre de usuario ya está en uso.');
+                }
+            }
             return await this.usuariosDB.modificarPorId(id, body);
         }catch (error) {
             throw new Error('Error al modificar el usuario: ' + error.message);

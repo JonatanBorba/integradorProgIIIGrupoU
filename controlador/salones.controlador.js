@@ -9,14 +9,8 @@ export default class SalonesControlador {
     }
     postSalones = async(req, res) => {
         const {titulo,direccion,capacidad,importe} = req.body;
-        if(!titulo || !direccion || !capacidad || !importe ){
-            return res.status(400).json({mensaje: 'Faltan datos obligatorios'});
-        }
-         if(typeof titulo !== 'string' || typeof direccion !== 'string' || typeof capacidad !== 'number' || typeof importe !== 'number' ){
-             return res.status(400).json({mensaje: 'El tipo de dato de algun campo es incorrecto'});
-        }
         const nuevoSalon = await this.salonesServicio.agregarSalon({titulo,direccion,capacidad,importe});
-        apicache.clear('/api/v1/salones'); 
+        apicache.clear('/api/v1/salones'); // limpiar cache al crear un nuevo salon
         res.status(201).json(nuevoSalon);
 
     };
@@ -35,7 +29,7 @@ export default class SalonesControlador {
     putSalonesPorId = async(req, res) => {    
         const idModificar = req.params.id;
         const salonesModificar = await this.salonesServicio.modificarPorId(idModificar, req.body);
-       if (salonesModificar) {apicache.clear('/api/v1/salones'); }  
+       if (salonesModificar) {apicache.clear('/api/v1/salones'); }  // limpiar cache al modificar un salon
         salonesModificar
         ?res.status(200).json(salonesModificar)
         : res.status(404).json({mensaje: 'Salón no encontrado'});
@@ -44,7 +38,7 @@ export default class SalonesControlador {
     deleteSalonPorId = async(req, res) => {
         const eliminar = await this.salonesServicio.eliminarPorId(req.params.id);
         if (eliminar) {
-            apicache.clear('/api/v1/salones'); 
+            apicache.clear('/api/v1/salones'); // limpiar cache al eliminar un salon
             res.status(200).json({mensaje: 'Salón eliminado'});
         } else {
             res.status(404).json({mensaje: 'Salón no encontrado'});

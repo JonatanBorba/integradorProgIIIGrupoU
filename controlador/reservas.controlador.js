@@ -149,6 +149,29 @@ crear = async (req, res) => {
         }
     }
 
+    actualizarReserva = async (req, res) => {
+        try {
+            const { reserva_id } = req.params;
+            const resultado = await this.reservasServicio.modificar(reserva_id, req.body, req.user);
 
+            if (!resultado.ok) {
+                if (resultado.motivo === 'no_encontrada') {
+                    return res.status(404).json({ estado: false, mensaje: 'Reserva no encontrada.' });
+                }
+                if (resultado.motivo === 'no_autorizado') {
+                    return res.status(403).json({ estado: false, mensaje: 'No autorizado para modificar esta reserva.' });
+                }
+                return res.status(400).json({ estado: false, mensaje: resultado.mensaje || 'No se pudo actualizar la reserva.' });
+            }
+
+            res.json({ estado: true, mensaje: 'Reserva actualizada correctamente.', reserva: resultado.data });
+        } catch (err) {
+            console.log('Error en PUT /reservas/:reserva_id', err);
+            res.status(500).json({
+                estado: false,
+                mensaje: 'Error interno del servidor.'
+            });
+        }
+    }
 
 }
