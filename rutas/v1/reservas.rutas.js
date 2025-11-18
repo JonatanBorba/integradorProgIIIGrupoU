@@ -243,6 +243,113 @@ import {check, param} from 'express-validator';
     ],
     reservasControlador.crear);
 
+    /**
+ * @swagger
+ * /api/v1/reservas/{reserva_id}:
+ *   put:
+ *     summary: Modificar una reserva existente
+ *     description: Actualiza los datos de una reserva y sus servicios asociados.
+ *     tags:
+ *       - Reservas
+ *     parameters:
+ *       - in: path
+ *         name: reserva_id
+ *         required: true
+ *         description: ID numérico de la reserva a modificar.
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - fecha_reserva
+ *               - salon_id
+ *               - usuario_id
+ *               - turno_id
+ *               - importe_salon
+ *               - importe_total
+ *               - servicios
+ *             properties:
+ *               fecha_reserva:
+ *                 type: string
+ *                 format: date
+ *                 example: "2025-11-20"
+ *               salon_id:
+ *                 type: integer
+ *                 minimum: 1
+ *                 example: 3
+ *               usuario_id:
+ *                 type: integer
+ *                 minimum: 1
+ *                 example: 5
+ *               turno_id:
+ *                 type: integer
+ *                 minimum: 1
+ *                 example: 2
+ *               importe_salon:
+ *                 type: number
+ *                 format: float
+ *                 minimum: 0
+ *                 example: 15000.5
+ *               importe_total:
+ *                 type: number
+ *                 format: float
+ *                 minimum: 0
+ *                 example: 20000
+ *               servicios:
+ *                 type: array
+ *                 minItems: 1
+ *                 items:
+ *                   type: object
+ *                   required:
+ *                     - servicio_id
+ *                     - importe
+ *                   properties:
+ *                     servicio_id:
+ *                       type: integer
+ *                       minimum: 1
+ *                       example: 10
+ *                     importe:
+ *                       type: number
+ *                       format: float
+ *                       minimum: 0
+ *                       example: 5000
+ *     responses:
+ *       200:
+ *         description: Reserva modificada correctamente.
+ *       400:
+ *         description: Error de validación o datos inválidos.
+ *       401:
+ *         description: No autorizado.
+ *       403:
+ *         description: El usuario no tiene permisos para modificar reservas.
+ *       404:
+ *         description: Reserva no encontrada.
+ *       500:
+ *         description: Error interno del servidor.
+ */
+router.put('/:reserva_id',
+  autorizarUsuarios([1,2,3]),
+  [
+    param('reserva_id', 'El ID de la reserva debe ser numérico.').isInt({ min: 1 }),
+    check('fecha_reserva', 'La fecha es necesaria.').notEmpty(),
+    check('salon_id', 'El salón es necesario y debe ser numérico.').isInt({ min: 1 }),
+    check('usuario_id', 'El usuario es necesario y debe ser numérico.').isInt({ min: 1 }),
+    check('turno_id', 'El turno es necesario y debe ser numérico.').isInt({ min: 1 }),
+    check('importe_salon', 'El importe del salón es obligatorio y debe ser numérico.').isFloat({ gt: 0 }),
+    check('importe_total', 'El importe total es obligatorio y debe ser numérico.').isFloat({ gt: 0 }),
+    check('servicios', 'Debe indicar los servicios de la reserva.').isArray({ min: 1 }),
+    check('servicios.*.servicio_id', 'Cada servicio debe incluir un ID numérico.').isInt({ min: 1 }),
+    check('servicios.*.importe', 'Cada servicio debe incluir un importe numérico.').isFloat({ gt: 0 }),
+    validarCampos
+  ],
+  reservasControlador.actualizarReserva
+);
+
    router.put('/:reserva_id',
    autorizarUsuarios([1,2,3]),
    [

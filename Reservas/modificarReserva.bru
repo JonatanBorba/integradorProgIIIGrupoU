@@ -5,11 +5,36 @@ meta {
 }
 
 put {
-  url: http://localhost:3000/api/v1/reservas/
-  body: none
-  auth: inherit
+  url: http://localhost:3000/api/v1/reservas/48
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsImVtYWlsIjoiYWxleEBnbWFpbC5jb20iLCJyb2wiOjEsImlhdCI6MTc2MzQzMDcxMCwiZXhwIjoxNzYzNDQ1MTEwfQ.zsPRXwwoQKPAgEBsZyzgp7FU-XGvGyBAfiI3pRsaSr8
+}
+
+body:json {
+  {
+    "fecha_reserva":"5/11/2025",
+    "salon_id":5,
+    "usuario_id":3,
+    "turno_id":2,
+    "foto_cumpleaniero":"foto_cumpleaniero",
+    "tematica": "Lobos",
+    "importe_salon":150000,
+    "importe_total":15000,
+    "servicios":[{
+      "servicio_id":6,
+      "importe":15000
+    }
+    
+    ]
+    
+  }
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }
